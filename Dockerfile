@@ -14,5 +14,6 @@ COPY --from=build /app/target/finance-dashboard-backend-0.0.1-SNAPSHOT.jar /app/
 
 EXPOSE 8080
 
-# Shell form (not JSON array) so ${PORT} is expanded by the shell
-CMD java -Dserver.port=${PORT:-8081} -jar /app/app.jar
+# Shell form so ${PORT} expands correctly at runtime.
+# JVM flags keep memory under 512MB for Railway/Render free tier.
+CMD java -Xms64m -Xmx350m -XX:MaxMetaspaceSize=128m -Dserver.port=${PORT:-8081} -jar /app/app.jar
