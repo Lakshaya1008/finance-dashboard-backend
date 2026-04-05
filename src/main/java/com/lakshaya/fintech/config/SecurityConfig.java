@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -30,6 +32,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * /h2-console/** - dev profile only
  * /swagger-ui/** - API docs
  * /v3/api-docs/** - OpenAPI spec
+ *
+ * UserDetailsService bean suppresses Spring Boot's InMemoryUserDetailsManager
+ * auto-configuration (which generates a random password and overrides this config).
+ * This app uses stateless JWT — no UserDetailsService is needed at runtime.
  */
 @Configuration
 @EnableWebSecurity
@@ -73,5 +79,19 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * Suppresses Spring Boot's UserDetailsServiceAutoConfiguration.
+     * Without this bean, Spring Boot auto-configures InMemoryUserDetailsManager,
+     * generates a random password on startup, and overrides this SecurityConfig —
+     * causing all endpoints including public /auth/** routes to return 401.
+     * This app uses stateless JWT authentication — no UserDetailsService is needed.
+     */
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return username -> {
+            throw new UsernameNotFoundException("This application uses JWT authentication only.");
+        };
     }
 }
