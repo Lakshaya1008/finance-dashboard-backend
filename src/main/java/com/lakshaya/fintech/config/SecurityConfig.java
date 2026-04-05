@@ -28,10 +28,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * - BCryptPasswordEncoder bean injected into AuthService
  *
  * Public routes:
- * /api/v1/auth/** - register + login
- * /h2-console/** - dev profile only
- * /swagger-ui/** - API docs
- * /v3/api-docs/** - OpenAPI spec
+ * /api/v1/auth/**   - register + login
+ * /api/v1/health    - uptime/cron keep-alive ping (no auth required)
+ * /h2-console/**    - dev profile only
+ * /swagger-ui/**    - API docs
+ * /v3/api-docs/**   - OpenAPI spec
  *
  * UserDetailsService bean suppresses Spring Boot's InMemoryUserDetailsManager
  * auto-configuration (which generates a random password and overrides this config).
@@ -61,6 +62,7 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/health").permitAll()  // cron job keep-alive
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/swagger-ui.html").permitAll()
