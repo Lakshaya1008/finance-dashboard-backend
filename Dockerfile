@@ -12,7 +12,7 @@ WORKDIR /app
 
 COPY --from=build /app/target/finance-dashboard-backend-0.0.1-SNAPSHOT.jar /app/app.jar
 
-# Railway injects PORT env var — pass it to Spring Boot's server.port
-# Falls back to 8081 for local Docker runs
-EXPOSE 8081
-ENTRYPOINT ["java", "-Dserver.port=${PORT:-8081}", "-jar", "/app/app.jar"]
+EXPOSE 8080
+
+# Shell form (not JSON array) so ${PORT} is expanded by the shell
+CMD java -Dserver.port=${PORT:-8081} -jar /app/app.jar
