@@ -6,6 +6,13 @@ The system manages financial records and users across three roles — Admin, Ana
 
 ---
 
+## Live Demo
+
+- **API Base URL:** https://finance-dashboard-backend-1-mh9y.onrender.com
+- **Swagger UI:** https://finance-dashboard-backend-1-mh9y.onrender.com/swagger-ui.html
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -149,6 +156,7 @@ src/main/java/com/lakshaya/fintech/
 ├── access/                     # AccessControlService — central enforcement brain
 ├── auth/                       # Register, Login, JWT response
 ├── common/
+│   ├── controller/             # HealthController — public keep-alive endpoint
 │   ├── exception/              # 5 custom exceptions + GlobalExceptionHandler
 │   └── response/               # ApiResponse<T> envelope
 ├── config/                     # SecurityConfig, SwaggerConfig
@@ -183,6 +191,7 @@ All protected endpoints require: `Authorization: Bearer <token>`
 | GET | `/dashboard/summary` | All roles | Total income, expense, net balance |
 | GET | `/dashboard/category-breakdown` | All roles | Totals grouped by category |
 | GET | `/dashboard/monthly-trend` | All roles | Income and expense per month |
+| GET | `/health` | Public | Uptime check / cron job keep-alive |
 
 ### Record Filtering
 
